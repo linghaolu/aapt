@@ -391,6 +391,9 @@ status_t ZipFile::addCommon(const char* fileName, const void* data, size_t size,
         goto bail;
     }
 
+    /* set entry last modity time to the current time */
+    time(&modWhen);
+
     pEntry = new ZipEntry;
     pEntry->initNew(storageName, NULL);
 
