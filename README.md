@@ -2,7 +2,7 @@
 fix android aapt bugs
 
 1. bugs of "aapt add":     
-   aapt add file use a wrong last modify time.    
+   aapt add a file to the zip, the new zip entry last modify time is not correct.
    
 2. bugs of "aapt remove":     
    delete the first zip entry in the apk file while not success.     
