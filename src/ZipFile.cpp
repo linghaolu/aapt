@@ -974,29 +974,22 @@ status_t ZipFile::crunchArchive(void)
         ZipEntry* pEntry = mEntries[i];
         long span;
 
-        if (pEntry->getLFHOffset() != 0) {
-            long nextOffset;
 
-            /* Get the length of this entry by finding the offset
-             * of the next entry.  Directory entries don't have
-             * file offsets, so we need to find the next non-directory
-             * entry.
-             */
-            nextOffset = 0;
-            for (int ii = i+1; nextOffset == 0 && ii < count; ii++)
-                nextOffset = mEntries[ii]->getLFHOffset();
-            if (nextOffset == 0)
-                nextOffset = mEOCD.mCentralDirOffset;
-            span = nextOffset - pEntry->getLFHOffset();
+        long nextOffset;
 
-            assert(span >= ZipEntry::LocalFileHeader::kLFHLen);
-        } else {
-            /* This is a directory entry.  It doesn't have
-             * any actual file contents, so there's no need to
-             * move anything.
-             */
-            span = 0;
-        }
+        /* Get the length of this entry by finding the offset
+         * of the next entry.  Directory entries don't have
+         * file offsets, so we need to find the next non-directory
+         * entry.
+         */
+        nextOffset = 0;
+        for (int ii = i+1; nextOffset == 0 && ii < count; ii++)
+            nextOffset = mEntries[ii]->getLFHOffset();
+        if (nextOffset == 0)
+            nextOffset = mEOCD.mCentralDirOffset;
+        span = nextOffset - pEntry->getLFHOffset();
+
+        assert(span >= ZipEntry::LocalFileHeader::kLFHLen);
 
         //printf("+++ %d: off=%ld span=%ld del=%d [count=%d]\n",
         //    i, pEntry->getLFHOffset(), span, pEntry->getDeleted(), count);
