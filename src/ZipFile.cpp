@@ -889,6 +889,14 @@ status_t ZipFile::remove(ZipEntry* pEntry)
 }
 
 /*
+ * used to sort the entires by LFH offset before execute delete.
+ */
+int compareLFHOffset(const ZipEntry** lhs, const ZipEntry** rhs) {
+    return (int)((*lhs)->getLFHOffset() - (*rhs)->getLFHOffset()); 
+}
+
+
+/*
  * Flush any pending writes.
  *
  * In particular, this will crunch out deleted entries, and write the
@@ -905,7 +913,11 @@ status_t ZipFile::flush(void)
     if (!mNeedCDRewrite)
         return NO_ERROR;
 
+
     assert(mZipFp != NULL);
+	
+    // sort the entries by lfh offset before execute delete.
+    mEntries.sort((Vector<ZipEntry*>::compar_t)compareLFHOffset);
 
     result = crunchArchive();
     if (result != NO_ERROR)
